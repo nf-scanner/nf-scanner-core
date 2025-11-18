@@ -1,11 +1,15 @@
 # nf-scanner-core
 Biblioteca para leitura de notas fiscais.
 
+## Funcionalidades
+
+- **Extração de Texto de PDFs**: Extrai o texto completo de arquivos PDF utilizando a biblioteca PyMuPDF.
+
 ## Instalação
 
-### Pré-requisitos
+### Dependências
 
-O projeto utiliza UV como gerenciador de pacotes e ambientes virtuais. Por isso, é necessário instalar o UV antes de instalar as dependências do projeto. Dependências diretas:
+O projeto utiliza UV como gerenciador de pacotes e ambientes virtuais. Por isso, é necessário instalar o UV antes de instalar as dependências do projeto. Requisitos para dependências:
 
 - Python 3.12 ou superior
 - UV
@@ -36,4 +40,26 @@ source .venv/bin/activate
 4. Instale as dependências do projeto
 ```bash
 uv pip install -e .
+```
+
+## Uso
+
+### Extração de Texto de PDFs
+
+#### Via linha de comando
+
+```bash
+# Extrai o texto do PDF
+nf-extract caminho/para/arquivo.pdf
+```
+
+#### Via código Python
+
+```python
+from nf_scanner_core.pdf_extractor import extract_text_from_pdf
+
+# Extrai o texto do PDF
+texto = extract_text_from_pdf("caminho/para/arquivo.pdf")
+
+print(texto)
 ```

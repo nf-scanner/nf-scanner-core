@@ -4,9 +4,21 @@ version = "0.1.0"
 description = "Biblioteca para leitura de Notas Fiscais."
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "pymupdf>=1.26.0",
+]
 
 [project.optional-dependencies]
 dev = [
     "uv",
 ]
+
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[project.scripts]
+nf-extract = "nf_scanner_core.cli:main"
