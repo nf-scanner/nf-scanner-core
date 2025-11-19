@@ -1,0 +1,28 @@
+# Esse workflow realiza a execução dos testes
+
+name: Python Execute Tests
+
+# Controls when the workflow will run
+on:
+  # Aciona em eventos de push e pr's para a main com alterações em arquivos python.
+  push:
+    branches: ["main"]
+
+  pull_request:
+    branches: ["main"]
+    types: ["opened"]
+
+  # Rodar o workflow manualmente
+  workflow_dispatch:
+
+jobs:
+  python-execute-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Installing dependencies
+        run: uv sync
+
+      - name: Running tests
+        run: uv run pytest --maxfail=1 --disable-warnings -q .
