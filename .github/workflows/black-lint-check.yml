@@ -18,14 +18,13 @@ on:
   workflow_dispatch:
 
 jobs:
-  mkdocs-deploy:
+  black-lint-check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      # Installing mkdocs and theme
       - name: Installing dependencies
-        run: pip3 install black
+        run: uv sync
 
       - name: Running Black lint check
-        run: black --check .
+        run: uv run black --check .

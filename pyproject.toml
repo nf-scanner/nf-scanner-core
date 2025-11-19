@@ -5,6 +5,7 @@ description = "Biblioteca para leitura de Notas Fiscais."
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "black>=25.11.0",
     "pymupdf>=1.26.0",
 ]
 

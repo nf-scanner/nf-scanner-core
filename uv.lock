@@ -66,6 +66,7 @@ name = "nf-scanner-core"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "black" },
     { name = "pymupdf" },
 ]
 
@@ -77,6 +78,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "black", specifier = ">=25.11.0" },
     { name = "black", marker = "extra == 'dev'" },
     { name = "pymupdf", specifier = ">=1.26.0" },
     { name = "uv", marker = "extra == 'dev'" },
