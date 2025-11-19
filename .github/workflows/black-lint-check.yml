@@ -1,0 +1,31 @@
+# Esse workflow realiza o check de lint do python, utilizando o Black
+
+name: Black Lint Check
+
+# Controls when the workflow will run
+on:
+  # Aciona em eventos de push e pr's para a main com alterações em arquivos python.
+  push:
+    branches: ["main"]
+    paths: ["*.py"]
+
+  pull_request:
+    branches: ["main"]
+    types: ["opened"]
+    paths: ["*.py"]
+
+  # Rodar o workflow manualmente
+  workflow_dispatch:
+
+jobs:
+  mkdocs-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Installing mkdocs and theme
+      - name: Installing dependencies
+        run: pip3 install black
+
+      - name: Running Black lint check
+        run: black --check .
