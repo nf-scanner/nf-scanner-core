@@ -14,6 +14,7 @@ dependencies = [
 dev = [
     "uv",
     "black",
+    "pre-commit",
 ]
 
 [build-system]
