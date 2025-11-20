@@ -18,16 +18,16 @@ class PDFExtractor:
     """
     Classe responsável por extrair texto e dados estruturados de arquivos PDF.
     """
-    
+
     def __init__(self, pdf_path: str):
         """
         Inicializa o extrator de PDF com o caminho para o arquivo PDF.
-        
+
         Args:
             pdf_path: Caminho para o arquivo PDF
         """
         self.pdf_path = pdf_path
-        
+
     def _extract_text(self) -> str:
         """
         Extrai o texto de um arquivo PDF usando PyMuPDF.
@@ -40,13 +40,17 @@ class PDFExtractor:
             RuntimeError: Se houver um erro ao ler o arquivo PDF
         """
         if not os.path.exists(self.pdf_path):
-            raise FileNotFoundError(f"O arquivo PDF não foi encontrado: {self.pdf_path}")
+            raise FileNotFoundError(
+                f"O arquivo PDF não foi encontrado: {self.pdf_path}"
+            )
 
         extracted_text = ""
 
         try:
             doc = pymupdf.open(self.pdf_path)
-            for page_num in range(len(doc)):  # Itera sobre todas as páginas do documento
+            for page_num in range(
+                len(doc)
+            ):  # Itera sobre todas as páginas do documento
                 page = doc[page_num]
                 extracted_text += page.get_text() + "\n"
             doc.close()
@@ -94,12 +98,13 @@ class PDFExtractor:
         Returns:
             str: Caminho do arquivo JSON salvo
         """
-        
+
         # Converte o texto para o modelo NFSe usando o parser
         nfse = NFSeParser.parse(self._extract_text())
 
         # Salva os dados em formato JSON
         return self._save_nfse_json(nfse)
+
 
 # Código de exemplo
 if __name__ == "__main__":

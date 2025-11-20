@@ -177,6 +177,7 @@ def test_parsing_nfse():
     assert nfse.tributos_federais.inss == Decimal("0.00")
     assert nfse.tributos_federais.csll == Decimal("0.00")
 
+
 def test_nfse_to_dict():
     """Testa a conversão do objeto NFSe para dicionário."""
     nfse = NFSeParser.parse(TEXTO_NFSE_EXEMPLO)

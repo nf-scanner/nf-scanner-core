@@ -263,8 +263,12 @@ class NFSeParser:
         # Extrai dados comuns
         razao_social = cls._extrair_valor_apos_chave(secao_empresa, "Razão Social")
         cnpj = cls._extrair_cnpj_cpf(secao_empresa)
-        inscricao_municipal = cls._extrair_valor_apos_chave(secao_empresa, "Inscrição Municipal")
-        inscricao_estadual = cls._extrair_valor_apos_chave(secao_empresa, "Inscrição Estadual")
+        inscricao_municipal = cls._extrair_valor_apos_chave(
+            secao_empresa, "Inscrição Municipal"
+        )
+        inscricao_estadual = cls._extrair_valor_apos_chave(
+            secao_empresa, "Inscrição Estadual"
+        )
 
         # Limpa os valores
         if inscricao_municipal:
@@ -306,7 +310,9 @@ class NFSeParser:
         # Extrai nome fantasia apenas para prestador
         nome_fantasia = None
         if tipo.lower() == "prestador":
-            nome_fantasia = cls._extrair_valor_apos_chave(secao_empresa, "Nome Fantasia")
+            nome_fantasia = cls._extrair_valor_apos_chave(
+                secao_empresa, "Nome Fantasia"
+            )
 
         # Corrige possível "Nome" extra na razão social
         if razao_social and "Nome" in razao_social:
@@ -333,9 +339,7 @@ class NFSeParser:
             return None
 
         # Extrai seção de discriminação de serviços
-        pattern = (
-            r"Discriminação dos Serviços.*?(?=Tributos Federais|Detalhamento de Valores|$)"
-        )
+        pattern = r"Discriminação dos Serviços.*?(?=Tributos Federais|Detalhamento de Valores|$)"
         match = re.search(pattern, texto, re.DOTALL)
         if not match:
             return None
@@ -381,7 +385,9 @@ class NFSeParser:
         # Extrai observações (detalhamento específico)
         observacoes = None
         observacoes_match = re.search(
-            r"Detalhamento Específico.*?(?=Tributos Federais|$)", secao_servico, re.DOTALL
+            r"Detalhamento Específico.*?(?=Tributos Federais|$)",
+            secao_servico,
+            re.DOTALL,
         )
         if observacoes_match:
             observacoes = cls._limpar_texto(observacoes_match.group(0))
@@ -434,9 +440,7 @@ class NFSeParser:
             return None
 
         # Extrai outras retenções e retenções federais, se disponíveis
-        retencoes_pattern = (
-            r"Outras Retenções:\s*R\$\s*([\d,.]+).*?Retenções Federais:\s*R\$\s*([\d,.]+)"
-        )
+        retencoes_pattern = r"Outras Retenções:\s*R\$\s*([\d,.]+).*?Retenções Federais:\s*R\$\s*([\d,.]+)"
         retencoes_match = re.search(retencoes_pattern, texto, re.DOTALL)
 
         outras_retencoes = Decimal("0.00")
@@ -478,7 +482,9 @@ class NFSeParser:
                 result["origem"] = f"Prefeitura Municipal de {origem}"
 
         secretaria_match = re.search(
-            r"SECRETARIA\s*MUNICIPAL DE\s*(.*?)(?=DIRETORIA|Número|$)", texto, re.IGNORECASE
+            r"SECRETARIA\s*MUNICIPAL DE\s*(.*?)(?=DIRETORIA|Número|$)",
+            texto,
+            re.IGNORECASE,
         )
         if secretaria_match:
             orgao = cls._limpar_texto(secretaria_match.group(1))
@@ -591,4 +597,3 @@ class NFSeParser:
             orgao=cabecalho.get("orgao"),
             nfse_substituida=cabecalho.get("nfse_substituida"),
         )
-        
