@@ -10,7 +10,7 @@ from datetime import datetime
 import pytest
 
 from nf_scanner_core.models import NFSe
-from nf_scanner_core.nfse_parser import texto_para_nfse, limpar_texto, extrair_endereco
+from nf_scanner_core.nfse_parser import NFSeParser
 
 
 # Exemplo de texto extraído de uma NFSe
@@ -54,7 +54,7 @@ Folha 1/1​
 def test_limpeza_texto():
     """Testa a função de limpeza de texto."""
     texto_sujo = "Texto com​\n​caracteres invisíveis e  espaços   extras​"
-    texto_limpo = limpar_texto(texto_sujo)
+    texto_limpo = NFSeParser._limpar_texto(texto_sujo)
 
     # Verifica se os caracteres invisíveis foram removidos
     assert "\u200b" not in texto_limpo
@@ -72,7 +72,7 @@ def test_limpeza_texto():
 def test_extracao_endereco():
     """Testa a função de extração de endereço."""
     texto_endereco = "Município: CIDADE EXEMPLO / XX Endereço: RUA DEMO, 100 - CENTRO - CEP: 00000-000"
-    endereco = extrair_endereco(texto_endereco)
+    endereco = NFSeParser._extrair_endereco(texto_endereco)
 
     assert endereco is not None
     assert endereco.logradouro == "RUA DEMO"
@@ -85,7 +85,7 @@ def test_extracao_endereco():
 
 def test_parsing_nfse():
     """Testa a conversão do texto para objeto NFSe, verificando todos os campos do JSON."""
-    nfse = texto_para_nfse(TEXTO_NFSE_EXEMPLO)
+    nfse = NFSeParser.parse(TEXTO_NFSE_EXEMPLO)
 
     # Verifica se o objeto foi criado corretamente
     assert isinstance(nfse, NFSe)
@@ -180,7 +180,7 @@ def test_parsing_nfse():
 
 def test_nfse_to_dict():
     """Testa a conversão do objeto NFSe para dicionário."""
-    nfse = texto_para_nfse(TEXTO_NFSE_EXEMPLO)
+    nfse = NFSeParser.parse(TEXTO_NFSE_EXEMPLO)
     nfse_dict = nfse.to_dict()
 
     # Verifica se o resultado é um dicionário
@@ -286,7 +286,7 @@ def test_nfse_to_dict():
 
 def test_json_serialization():
     """Testa se o objeto NFSe pode ser serializado para JSON."""
-    nfse = texto_para_nfse(TEXTO_NFSE_EXEMPLO)
+    nfse = NFSeParser.parse(TEXTO_NFSE_EXEMPLO)
     nfse_dict = nfse.to_dict()
 
     # Tenta serializar para JSON
@@ -313,6 +313,7 @@ if __name__ == "__main__":
     test_limpeza_texto()
     test_extracao_endereco()
     test_parsing_nfse()
+    test_function_compatibility()
     test_nfse_to_dict()
     test_json_serialization()
     print("Todos os testes passaram!")
