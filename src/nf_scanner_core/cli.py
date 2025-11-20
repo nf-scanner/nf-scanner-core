@@ -5,11 +5,7 @@ Interface de linha de comando para NF-Scanner-Core.
 import argparse
 import json
 import sys
-from nf_scanner_core.pdf_extractor import (
-    extract_text_from_pdf,
-    extract_nfse_from_pdf,
-    extract_and_save_nfse,
-)
+from nf_scanner_core.pdf_extractor import PDFExtractor
 
 
 def main():
@@ -25,8 +21,9 @@ def main():
     args = parser.parse_args()
 
     try:
-
-        output_path = extract_and_save_nfse(args.pdf_path)
+        # Extrai e salva os dados da NFSe usando a nova API orientada a objetos
+        extractor = PDFExtractor(args.pdf_path)
+        output_path = extractor.extract_and_save()
 
         # Imprime os dados extraídos no formato JSON
         with open(output_path, "r", encoding="utf-8") as json_file:
