@@ -39,8 +39,28 @@ source .venv/bin/activate
 
 4. Instale as dependências do projeto
 ```bash
-uv pip install -e .
+uv pip install -e ".[dev]"
 ```
+
+## Desenvolvimento
+
+### Pré-commit hooks
+
+O projeto utiliza pre-commit hooks para garantir a qualidade do código. Para configurá-los:
+
+1. Instale as dependências de desenvolvimento
+```bash
+uv pip install -e ".[dev]"
+```
+
+2. Instale os hooks do pre-commit
+```bash
+pre-commit install
+```
+
+Os seguintes hooks serão executados automaticamente antes de cada commit:
+- **Black**: Formata automaticamente o código Python
+- **pytest**: Executa todos os testes do projeto
 
 ## Uso
 
