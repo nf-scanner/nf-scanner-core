@@ -1,8 +1,7 @@
 """
 Módulo de extração de texto de arquivos de imagem para NF-Scanner-Core.
 
-Este módulo fornece funcionalidades para extrair texto de arquivos de imagem e armazenar os dados extraídos.
-Usa Tesseract OCR para extração de texto de imagens.
+Este módulo fornece a interface para extrair texto de arquivos de imagem utilizando Tesseract.
 """
 
 import os
@@ -14,7 +13,11 @@ import pytesseract
 from PIL import Image, ImageEnhance, ImageFilter
 
 from nf_scanner_core.models import NFSe
-from nf_scanner_core.nfse_parser import NFSeParser
+from nf_scanner_core.parsers.nfse_parser import NFSeParser
+from nf_scanner_core.utils.file_utils import (
+    get_output_json_path,
+    ensure_directory_exists,
+)
 
 
 class ImageExtractor:
@@ -22,14 +25,16 @@ class ImageExtractor:
     Classe responsável por extrair texto e dados estruturados de arquivos de imagem.
     """
 
-    def __init__(self, image_path: str):
+    def __init__(self, image_path: str, output_dir: Optional[str] = None):
         """
         Inicializa o extrator de imagem com o caminho para o arquivo de imagem.
 
         Args:
             image_path: Caminho para o arquivo de imagem
+            output_dir: Diretório de saída opcional para salvar os resultados
         """
         self.image_path = image_path
+        self.output_dir = output_dir
 
     def _preprocess_image(self, image: Image.Image) -> Image.Image:
         """
@@ -73,7 +78,16 @@ class ImageExtractor:
                 interpolation=cv2.INTER_CUBIC,
             )
 
-        return Image.fromarray(gray)
+        # Aplica binarização adaptativa (melhora contraste do texto)
+        binary = cv2.adaptiveThreshold(
+            gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2
+        )
+
+        # Remoção de ruído com filtro morfológico
+        kernel = np.ones((1, 1), np.uint8)
+        binary = cv2.morphologyEx(binary, cv2.MORPH_OPEN, kernel)
+
+        return Image.fromarray(binary)
 
     def _extract_text(self) -> str:
         """
@@ -108,8 +122,6 @@ class ImageExtractor:
                 processed_image, lang="por", config=config
             )
 
-            print(extracted_text)
-
             return extracted_text.strip()
 
         except Exception as e:
@@ -125,14 +137,10 @@ class ImageExtractor:
         Returns:
             str: Caminho do arquivo JSON salvo
         """
-        # Define o caminho de saída
-        filename = f"nfse_{nfse.codigo_verificacao}.json"
-        dir_path = os.path.dirname(self.image_path)
-        output_path = os.path.join(dir_path, filename)
-
-        # Cria o diretório de saída se necessário
-        if not os.path.exists(dir_path):
-            os.makedirs(dir_path)
+        # Define o caminho de saída usando a função utilitária
+        output_path = get_output_json_path(
+            self.image_path, nfse.codigo_verificacao, self.output_dir
+        )
 
         # Converte o objeto NFSe para um dicionário
         nfse_dict = nfse.to_dict()
