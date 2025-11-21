@@ -8,7 +8,6 @@ from nf_scanner_core.models.endereco import Endereco
 from nf_scanner_core.models.contato import Contato
 from nf_scanner_core.models.empresa import Empresa
 from nf_scanner_core.models.servico_detalhe import ServicoDetalhe
-from nf_scanner_core.models.construcao_civil import ConstrucaoCivil
 from nf_scanner_core.models.tributos_federais import TributosFederais
 from nf_scanner_core.models.valores import Valores
 from nf_scanner_core.models.nfse import NFSe
@@ -18,7 +17,6 @@ __all__ = [
     "Contato",
     "Empresa",
     "ServicoDetalhe",
-    "ConstrucaoCivil",
     "TributosFederais",
     "Valores",
     "NFSe",

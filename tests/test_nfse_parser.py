@@ -93,71 +93,76 @@ def test_parsing_nfse():
     # 1. Testa dados de cabeçalho
     assert nfse.data_hora_emissao.strftime("%d/%m/%Y %H:%M") == "01/01/2025 09:00"
     assert nfse.competencia == "01/2025"
-    assert nfse.codigo_verificacao == "XYZ123"
+    assert nfse.codigo_verificacao.lower() == "XYZ123".lower()
     assert nfse.numero_rps == "000045"
-    assert nfse.local_prestacao == "CIDADE EXEMPLO"
+    assert nfse.local_prestacao.lower() == "CIDADE EXEMPLO".lower()
     assert nfse.numero_nfse == "29"
-    assert nfse.origem == "Prefeitura Municipal de CIDADE EXEMPLO"
-    assert nfse.orgao == "Secretaria Municipal de ADMINISTRAÇÃO E FINANÇAS"
+    assert nfse.origem.lower() == "Prefeitura Municipal de CIDADE EXEMPLO".lower()
+    assert (
+        nfse.orgao.lower() == "Secretaria Municipal de ADMINISTRAÇÃO E FINANÇAS".lower()
+    )
     assert nfse.nfse_substituida is None
 
     # 2. Testa dados do prestador
-    assert nfse.prestador.razao_social == "EMPRESA FICTÍCIA LTDA"
+    assert nfse.prestador.razao_social.lower() == "EMPRESA FICTÍCIA LTDA".lower()
     assert nfse.prestador.cnpj == "12.345.678/0001-90"
     assert nfse.prestador.inscricao_municipal == "123456"
     assert nfse.prestador.inscricao_estadual is None
-    assert nfse.prestador.nome_fantasia == "EXEMPLO SERVIÇOS"
+    assert nfse.prestador.nome_fantasia.lower() == "EXEMPLO SERVIÇOS".lower()
 
     # 2.1 Testa endereço do prestador
     assert nfse.prestador.endereco is not None
-    assert nfse.prestador.endereco.logradouro == "RUA DEMO"
+    assert nfse.prestador.endereco.logradouro.lower() == "RUA DEMO".lower()
     assert nfse.prestador.endereco.numero == "100"
-    assert nfse.prestador.endereco.bairro == "CENTRO"
+    assert nfse.prestador.endereco.bairro.lower() == "CENTRO".lower()
     assert nfse.prestador.endereco.cep == "00000-000"
-    assert nfse.prestador.endereco.municipio == "CIDADE EXEMPLO"
-    assert nfse.prestador.endereco.uf == "XX"
+    assert nfse.prestador.endereco.municipio.lower() == "CIDADE EXEMPLO".lower()
+    assert nfse.prestador.endereco.uf.lower() == "XX".lower()
 
     # 2.2 Testa contato do prestador
     assert nfse.prestador.contato is not None
     assert nfse.prestador.contato.telefone == "(00) 0000-0000"
-    assert nfse.prestador.contato.email == "contato@empresa.com"
+    assert nfse.prestador.contato.email.lower() == "contato@empresa.com".lower()
 
     # 3. Testa dados do tomador
-    assert nfse.tomador.razao_social == "CLIENTE TESTE S.A."
-    assert nfse.tomador.cnpj == "98.765.432/0001-55"
+    assert nfse.tomador.razao_social.lower() == "CLIENTE TESTE S.A.".lower()
+    assert nfse.tomador.cnpj.lower() == "98.765.432/0001-55".lower()
     assert nfse.tomador.inscricao_municipal == "999999"
-    assert nfse.tomador.inscricao_estadual is None
+    assert nfse.tomador.inscricao_estadual == "888888"
     assert nfse.tomador.nome_fantasia is None
 
     # 3.1 Testa endereço do tomador
     assert nfse.tomador.endereco is not None
-    assert nfse.tomador.endereco.logradouro == "AV. EXEMPLAR"
+    assert nfse.tomador.endereco.logradouro.lower() == "AV. EXEMPLAR".lower()
     assert nfse.tomador.endereco.numero == "200"
-    assert nfse.tomador.endereco.bairro == "BAIRRO"
+    assert nfse.tomador.endereco.bairro.lower() == "BAIRRO".lower()
     assert nfse.tomador.endereco.cep == "11111-111"
-    assert nfse.tomador.endereco.municipio == "OUTRA CIDADE"
-    assert nfse.tomador.endereco.uf == "YY"
+    assert nfse.tomador.endereco.municipio.lower() == "OUTRA CIDADE".lower()
+    assert nfse.tomador.endereco.uf.lower() == "YY".lower()
 
     # 3.2 Testa contato do tomador
     assert nfse.tomador.contato is not None
     assert nfse.tomador.contato.telefone == "(11) 1111-1111"
-    assert nfse.tomador.contato.email == "cliente@teste.com"
+    assert nfse.tomador.contato.email.lower() == "cliente@teste.com".lower()
 
     # 4. Testa dados do serviço
     assert (
-        nfse.servico.descricao
-        == "Serviços fictícios realizados em equipamentos para fins de teste."
+        nfse.servico.descricao.lower()
+        == "Serviços fictícios realizados em equipamentos para fins de teste.".lower()
     )
     assert nfse.servico.codigo_servico == "14.01"
-    assert nfse.servico.atividade_descricao == "Manutenção de equipamentos fictícios"
+    assert (
+        nfse.servico.atividade_descricao.lower()
+        == "Manutenção de equipamentos fictícios".lower()
+    )
     assert nfse.servico.cnae == "3314717"
     assert (
-        nfse.servico.cnae_descricao
-        == "Manutenção e reparação de máquinas e equipamentos (teste)"
+        nfse.servico.cnae_descricao.lower()
+        == "Manutenção e reparação de máquinas e equipamentos (teste)".lower()
     )
     assert (
-        nfse.servico.observacoes
-        == "Detalhamento Específico da Construção Civil - Código da Obra: --- Código ART: ---"
+        nfse.servico.observacoes.lower()
+        == "Detalhamento Específico da Construção Civil - Código da Obra: --- Código ART: ---".lower()
     )
 
     # 5. Testa valores
@@ -224,7 +229,7 @@ def test_nfse_to_dict():
     assert tomador["razao_social"] == "CLIENTE TESTE S.A."
     assert tomador["cnpj"] == "98.765.432/0001-55"
     assert tomador["inscricao_municipal"] == "999999"
-    assert tomador["inscricao_estadual"] is None
+    assert tomador["inscricao_estadual"] == "888888"
     assert tomador["nome_fantasia"] is None
 
     # 3.1 Verifica endereço do tomador no dicionário

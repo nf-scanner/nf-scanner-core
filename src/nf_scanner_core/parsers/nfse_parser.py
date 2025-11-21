@@ -14,7 +14,6 @@ from nf_scanner_core.models import (
     Endereco,
     Contato,
     ServicoDetalhe,
-    ConstrucaoCivil,
     TributosFederais,
     Valores,
 )
@@ -266,8 +265,12 @@ class NFSeParser:
         inscricao_municipal = cls._extrair_valor_apos_chave(
             secao_empresa, "Inscrição Municipal"
         )
-        inscricao_estadual = cls._extrair_valor_apos_chave(
-            secao_empresa, "Inscrição Estadual"
+
+        # Melhor extração de inscrição estadual com regex
+        insc_estadual_pattern = r"Inscrição Estadual:\s*([^\s]+)"
+        insc_estadual_match = re.search(insc_estadual_pattern, secao_empresa)
+        inscricao_estadual = (
+            insc_estadual_match.group(1) if insc_estadual_match else None
         )
 
         # Limpa os valores
@@ -279,8 +282,14 @@ class NFSeParser:
             # Extrai apenas os números da inscrição municipal
             inscricao_municipal = re.sub(r"[^\d]", "", inscricao_municipal)
 
-        if inscricao_estadual and "Município" in inscricao_estadual:
-            inscricao_estadual = inscricao_estadual.split("Município")[0].strip()
+        # Limpa a inscrição estadual
+        if inscricao_estadual:
+            if inscricao_estadual == "---":
+                inscricao_estadual = None
+            elif "Município" in inscricao_estadual:
+                inscricao_estadual = inscricao_estadual.split("Município")[0].strip()
+                if inscricao_estadual == "---":
+                    inscricao_estadual = None
 
         # Extrai endereço
         endereco = cls._extrair_endereco(secao_empresa)
