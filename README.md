@@ -89,6 +89,34 @@ uv pip install -e ".[dev]"
 
 ## Desenvolvimento
 
+### Configuração de Variáveis de Ambiente
+
+O projeto utiliza arquivos `.env` para gerenciar as chaves de API para integração com IA.
+
+1. Crie um arquivo `.env` na raiz do projeto (você pode copiar o arquivo `env.example`)
+
+```bash
+cp env.example .env
+```
+
+2. Edite o arquivo `.env` e adicione suas chaves de API e outras configurações
+
+```
+CLAUDE_API_KEY=sua-chave-api-aqui
+CLAUDE_API_ID=claude-sonnet-4-5-20250929
+CLAUDE_API_ALIAS=claude-sonnet-4-5
+```
+
+3. A biblioteca carregará automaticamente as configurações do arquivo `.env`
+
+```python
+from nf_scanner_core.utils.config import get_ai_api_key
+
+api_key = get_ai_api_key()
+```
+
+> **IMPORTANTE**: Nunca compartilhe ou comite o arquivo `.env` com suas chaves. O arquivo `.env` está incluído no `.gitignore`.
+
 ### Pré-commit hooks
 
 O projeto utiliza pre-commit hooks para garantir a qualidade do código. Para configurá-los:
