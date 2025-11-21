@@ -1,8 +1,7 @@
 """
 Módulo de extração de texto de arquivos PDF para NF-Scanner-Core.
 
-Este módulo fornece funcionalidades para extrair texto de arquivos PDF e armazenar os dados extraídos.
-Usa PyMuPDF para extração de texto de alta performance.
+Este módulo fornece a interface para extrair texto de arquivos PDF utilizando PyMuPDF.
 """
 
 import os
@@ -11,7 +10,11 @@ import pymupdf
 from typing import Optional, Dict, Any, Union
 
 from nf_scanner_core.models import NFSe
-from nf_scanner_core.nfse_parser import NFSeParser
+from nf_scanner_core.parsers.nfse_parser import NFSeParser
+from nf_scanner_core.utils.file_utils import (
+    get_output_json_path,
+    ensure_directory_exists,
+)
 
 
 class PDFExtractor:
@@ -19,14 +22,16 @@ class PDFExtractor:
     Classe responsável por extrair texto e dados estruturados de arquivos PDF.
     """
 
-    def __init__(self, pdf_path: str):
+    def __init__(self, pdf_path: str, output_dir: Optional[str] = None):
         """
         Inicializa o extrator de PDF com o caminho para o arquivo PDF.
 
         Args:
             pdf_path: Caminho para o arquivo PDF
+            output_dir: Diretório de saída opcional para salvar os resultados
         """
         self.pdf_path = pdf_path
+        self.output_dir = output_dir
 
     def _extract_text(self) -> str:
         """
@@ -60,7 +65,7 @@ class PDFExtractor:
         except Exception as e:
             raise RuntimeError(f"Erro ao extrair o texto do PDF: {str(e)}")
 
-    def _save_nfse_json(self, nfse: NFSe, output_dir: str = None) -> str:
+    def _save_nfse_json(self, nfse: NFSe) -> str:
         """
         Salva os dados estruturados da NFSe em formato JSON.
 
@@ -71,13 +76,9 @@ class PDFExtractor:
             str: Caminho do arquivo JSON salvo
         """
         # Define o caminho de saída
-        filename = f"nfse_{nfse.codigo_verificacao}.json"
-        dir_path = os.path.dirname(self.pdf_path)
-        output_path = os.path.join(dir_path, filename)
-
-        # Cria o diretório de saída se necessário
-        if not os.path.exists(dir_path):
-            os.makedirs(dir_path)
+        output_path = get_output_json_path(
+            self.pdf_path, nfse.codigo_verificacao, self.output_dir
+        )
 
         # Converte o objeto NFSe para um dicionário
         nfse_dict = nfse.to_dict()
@@ -98,9 +99,11 @@ class PDFExtractor:
         Returns:
             str: Caminho do arquivo JSON salvo
         """
+        # Extrai texto do PDF
+        text = self._extract_text()
 
         # Converte o texto para o modelo NFSe usando o parser
-        nfse = NFSeParser.parse(self._extract_text())
+        nfse = NFSeParser.parse(text)
 
         # Salva os dados em formato JSON
         return self._save_nfse_json(nfse)

@@ -10,7 +10,7 @@ from datetime import datetime
 import pytest
 
 from nf_scanner_core.models import NFSe
-from nf_scanner_core.nfse_parser import NFSeParser
+from nf_scanner_core.parsers.nfse_parser import NFSeParser
 
 
 # Exemplo de texto extraído de uma NFSe
@@ -313,7 +313,6 @@ if __name__ == "__main__":
     test_limpeza_texto()
     test_extracao_endereco()
     test_parsing_nfse()
-    test_function_compatibility()
     test_nfse_to_dict()
     test_json_serialization()
     print("Todos os testes passaram!")
