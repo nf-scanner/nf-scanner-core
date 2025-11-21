@@ -13,7 +13,7 @@ from nf_scanner_core.parsers.nfse_parser import NFSeParser
 from nf_scanner_core.parsers.ai_nfse_parser import AINFSeParser, AIParseError
 from nf_scanner_core.utils.config import get_ai_api_key
 
-from test_nfse_parser import TEXTO_NFSE_EXEMPLO
+from ..py.test_nfse_parser import TEXTO_NFSE_EXEMPLO
 
 
 @pytest.fixture
