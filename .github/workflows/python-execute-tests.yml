@@ -26,4 +26,8 @@ jobs:
         run: uv sync
 
       - name: Running tests
-        run: uv run pytest --maxfail=1 --disable-warnings -q .
+        run: uv run pytest --maxfail=1 --disable-warnings -q
+        env:
+          CLAUDE_API_KEY: ${{ secrets.CLAUDE_API_KEY }}
+          CLAUDE_API_ID: ${{ secrets.CLAUDE_API_ID }}
+          CLAUDE_API_ALIAS: ${{ secrets.CLAUDE_API_ALIAS }}
