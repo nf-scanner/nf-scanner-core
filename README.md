@@ -9,6 +9,85 @@ Biblioteca para leitura de notas fiscais.
 - **Processamento Automático**: Detecta automaticamente o tipo de arquivo e utiliza o extrator apropriado.
 - **Análise de NFSe**: Converte o texto extraído em um objeto estruturado com os dados da NFSe.
 
+### Texto final extraído a partir do exemplo
+
+{
+  "nfse": {
+    "data_hora_emissao": "2025-01-01T09:00:00",
+    "competencia": "01/2025",
+    "codigo_verificacao": "XYZ123",
+    "numero_rps": "000045",
+    "local_prestacao": "CIDADE EXEMPLO",
+    "numero_nfse": "29",
+    "origem": "PREFEITURA MUNICIPAL DE CIDADE EXEMPLO",
+    "orgao": "SECRETARIA MUNICIPAL DE ADMINISTRAÇÃO E FINANÇAS - DIRETORIA DE TRIBUTAÇÃO E FISCALIZAÇÃO",
+    "nfse_substituida": null,
+    "prestador": {
+      "razao_social": "EMPRESA FICTÍCIA LTDA",
+      "cnpj": "12.345.678/0001-90",
+      "inscricao_municipal": "123456",
+      "inscricao_estadual": null,
+      "nome_fantasia": "EXEMPLO SERVIÇOS",
+      "endereco": {
+        "logradouro": "RUA DEMO",
+        "numero": "100",
+        "bairro": "CENTRO",
+        "cep": "00000-000",
+        "municipio": "CIDADE EXEMPLO",
+        "uf": "XX"
+      },
+      "contato": {
+        "telefone": "(00) 0000-0000",
+        "email": "contato@empresa.com"
+      }
+    },
+    "tomador": {
+      "razao_social": "CLIENTE TESTE S.A.",
+      "cnpj": "98.765.432/0001-55",
+      "inscricao_municipal": "999999",
+      "inscricao_estadual": "888888",
+      "nome_fantasia": null,
+      "endereco": {
+        "logradouro": "AV. EXEMPLAR",
+        "numero": "200",
+        "bairro": "BAIRRO",
+        "cep": "11111-111",
+        "municipio": "OUTRA CIDADE",
+        "uf": "YY"
+      },
+      "contato": {
+        "telefone": "(11) 1111-1111",
+        "email": "cliente@teste.com"
+      }
+    },
+    "servico": {
+      "descricao": "Serviços fictícios realizados em equipamentos para fins de teste.",
+      "codigo_servico": "14.01",
+      "atividade_descricao": "Manutenção de equipamentos fictícios",
+      "cnae": "3314717",
+      "cnae_descricao": "Manutenção e reparação de máquinas e equipamentos (teste)",
+      "observacoes": "Detalhamento Específico da Construção Civil - Código da Obra: --- Código ART: ---"
+    },
+    "valores": {
+      "valor_servicos": "1500.0",
+      "desconto": "0.0",
+      "valor_liquido": "1500.0",
+      "base_calculo": "1500.0",
+      "aliquota": "0.02",
+      "valor_iss": "30.0",
+      "outras_retencoes": "0.0",
+      "retencoes_federais": "0.0"
+    },
+    "tributos_federais": {
+      "pis": "0.0",
+      "cofins": "0.0",
+      "ir": "0.0",
+      "inss": "0.0",
+      "csll": "0.0"
+    }
+  }
+}
+
 ## Arquitetura
 
 A biblioteca segue uma **Arquitetura em Camadas (Layered Architecture)**, baseando-se no **Clean Architecture**:
