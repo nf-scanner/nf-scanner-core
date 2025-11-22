@@ -311,13 +311,3 @@ def test_json_serialization():
 
     except Exception as e:
         pytest.fail(f"Falha ao serializar o objeto NFSe para JSON: {str(e)}")
-
-
-if __name__ == "__main__":
-    # Executa os testes manualmente
-    test_limpeza_texto()
-    test_extracao_endereco()
-    test_parsing_nfse()
-    test_nfse_to_dict()
-    test_json_serialization()
-    print("Todos os testes passaram!")

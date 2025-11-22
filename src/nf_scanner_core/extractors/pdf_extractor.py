@@ -107,13 +107,3 @@ class PDFExtractor:
 
         # Salva os dados em formato JSON
         return self._save_nfse_json(nfse)
-
-
-# Código de exemplo
-if __name__ == "__main__":
-    pdf_path = "./test_inputs/NFSe_ficticia_layout_completo.pdf"
-
-    # Extrai e salva os dados da NFSe usando a nova API orientada a objetos
-    extractor = PDFExtractor(pdf_path)
-    json_path = extractor.extract_and_save()
-    print(f"Dados da NFSe salvos em: {json_path}")

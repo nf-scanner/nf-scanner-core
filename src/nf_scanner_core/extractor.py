@@ -93,16 +93,3 @@ class NFExtractor:
             str: Tipo de arquivo ('pdf' ou 'image')
         """
         return self.file_type
-
-
-# Código de exemplo
-if __name__ == "__main__":
-    file_path = "./test_inputs/NFSe_ficticia_layout_completo.pdf"
-
-    # Cria o extrator que automaticamente detecta o tipo de arquivo
-    extractor = NFExtractor(file_path)
-
-    # Extrai e salva os dados da NFSe
-    json_path = extractor.extract_and_save()
-    print(f"Dados da NFSe salvos em: {json_path}")
-    print(f"Tipo de arquivo: {extractor.get_file_type()}")

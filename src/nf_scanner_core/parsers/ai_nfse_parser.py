@@ -25,6 +25,10 @@ from nf_scanner_core.utils.config import (
     get_ai_model,
     get_ai_model_alias,
 )
+from nf_scanner_core.utils.ai_prompts import (
+    NFSE_STRUCTURED_DATA_PROMPT,
+    STRUCTURED_TEXT_USER_TEXT,
+)
 
 # Configuração de logging
 logger = logging.getLogger(__name__)
@@ -67,100 +71,11 @@ class AINFSeParser:
         try:
             client = anthropic.Anthropic(api_key=api_key)
 
-            system_prompt = """
-            Você é um assistente especializado na extração de dados de Notas Fiscais de Serviço Eletrônicas (NFSe).
-            Sua tarefa é converter o texto extraído de uma NFSe em uma estrutura JSON que segue exatamente o modelo fornecido.
-            
-            Regras importantes:
-            1. Analise todos os campos cuidadosamente, mesmo que estejam em ordem diferente no documento
-            2. Use null para campos que não conseguiu encontrar
-            3. Sempre converta valores monetários para formato decimal (sem símbolos como R$ ou pontos)
-            4. Datas devem estar no formato ISO 8601 (YYYY-MM-DD) quando possível
-            5. Retorne APENAS o JSON como resposta, sem qualquer explicação ou texto adicional
-            6. Certifique-se de que os valores correspondam aos tipos corretos
-            7. Extraia qualquer informação relevante do serviço, como detalhamento específico, para o campo de "observações" em serviço.
-            
-            Formato de saída JSON esperado:
-            
-            {
-              "data_hora_emissao": "2023-01-01T00:00:00", // formato ISO ou null
-              "competencia": "string", // mês/ano ou null
-              "codigo_verificacao": "string", // código ou null
-              "numero_rps": "string", // número ou null
-              "local_prestacao": "string", // local ou null
-              "numero_nfse": "string", // número ou null
-              "origem": "string", // nome da prefeitura ou null
-              "orgao": "string", // nome do órgão ou null
-              "nfse_substituida": "string", // número ou null
-              "prestador": {
-                "razao_social": "string", // obrigatório
-                "cnpj": "string", // obrigatório
-                "inscricao_municipal": "string", // ou null
-                "inscricao_estadual": "string", // ou null
-                "nome_fantasia": "string", // ou null
-                "endereco": {
-                  "logradouro": "string", // obrigatório
-                  "numero": "string", // obrigatório
-                  "bairro": "string", // ou null
-                  "cep": "string", // ou null
-                  "municipio": "string", // ou null
-                  "uf": "string" // ou null
-                },
-                "contato": {
-                  "telefone": "string", // ou null
-                  "email": "string" // ou null
-                }
-              },
-              "tomador": {
-                "razao_social": "string", // obrigatório
-                "cnpj": "string", // obrigatório
-                "inscricao_municipal": "string", // ou null
-                "inscricao_estadual": "string", // ou null
-                "nome_fantasia": "string", // ou null
-                "endereco": {
-                  "logradouro": "string", // obrigatório
-                  "numero": "string", // obrigatório
-                  "bairro": "string", // ou null
-                  "cep": "string", // ou null
-                  "municipio": "string", // ou null
-                  "uf": "string" // ou null
-                },
-                "contato": {
-                  "telefone": "string", // ou null
-                  "email": "string" // ou null
-                }
-              },
-              "servico": {
-                "descricao": "string", // obrigatório
-                "codigo_servico": "string", // ou null
-                "atividade_descricao": "string", // ou null
-                "cnae": "string", // ou null
-                "cnae_descricao": "string", // ou null
-                "observacoes": "string" // ou null (as observações são referentes ao serviço, não ao documento. Costumam aparecer após os dados do serviço, como código do serviço, atividade, cnae, etc.)
-              },
-              "valores": {
-                "valor_servicos": 0.0, // valor decimal obrigatório
-                "desconto": 0.0, // valor decimal ou 0.0
-                "valor_liquido": 0.0, // valor decimal ou 0.0
-                "base_calculo": 0.0, // valor decimal ou 0.0
-                "aliquota": 0.0, // valor decimal entre 0 e 1 (representando porcentagem)
-                "valor_iss": 0.0, // valor decimal ou 0.0
-                "outras_retencoes": 0.0, // valor decimal ou 0.0
-                "retencoes_federais": 0.0 // valor decimal ou 0.0
-              },
-              "tributos_federais": {
-                "pis": 0.0, // valor decimal ou 0.0
-                "cofins": 0.0, // valor decimal ou 0.0
-                "ir": 0.0, // valor decimal ou 0.0
-                "inss": 0.0, // valor decimal ou 0.0
-                "csll": 0.0 // valor decimal ou 0.0
-              }
-            }
-            """
+            system_prompt = NFSE_STRUCTURED_DATA_PROMPT
 
-            # Construindo a mensagem para o modelo
+            # Construindo mensagem para o modelo
             user_prompt = f"""
-            Extraia os dados desta Nota Fiscal de Serviço Eletrônica (NFSe) e retorne em formato JSON:
+            {STRUCTURED_TEXT_USER_TEXT}
             
             {texto}
             """

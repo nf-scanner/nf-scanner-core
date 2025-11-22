@@ -40,12 +40,10 @@ class ImageExtractor:
         """
         Pré-processa a imagem para melhorar a qualidade do OCR.
 
-        Implementa várias técnicas recomendadas pela documentação do Tesseract:
+        Implementa várias técnicas recomendadas pela documentação do Tesseract, por exemplo:
         - Redimensionamento (rescaling)
         - Binarização (thresholding)
         - Remoção de ruído
-        - Correção de rotação (deskewing)
-        - Tratamento de bordas
 
         Args:
             image: Imagem original em formato PIL
@@ -113,9 +111,7 @@ class ImageExtractor:
             processed_image = self._preprocess_image(image)
 
             # Adiciona configurações adicionais para o Tesseract
-            config = (
-                "--psm 6 --oem 1"  # Página como um único bloco de texto, usando o LSTM
-            )
+            config = "--psm 6 --oem 1"
 
             # Extrai o texto usando pytesseract
             extracted_text = pytesseract.image_to_string(
