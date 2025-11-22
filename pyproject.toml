@@ -1,17 +1,18 @@
 [project]
 name = "nf-scanner-core"
-version = "0.1.0"
+version = "2.0"
 description = "Biblioteca para leitura de Notas Fiscais."
 readme = "README.md"
 requires-python = ">=3.12"
+authors = [
+    {name = "Arthur Ferreira", email = "fr.arthur.fr@gmail.com"}
+]
 dependencies = [
-    "black>=25.11.0",
     "pymupdf>=1.26.0",
     "pytesseract>=0.3.13",
     "pillow>=10.0.0",
     "opencv-python>=4.8.0",
-    "numpy>=1.26.0",
-    "pytest>=9.0.1",
+    "numpy>=1.26.0", 
     "python-dotenv>=1.0.0",
     "anthropic>=0.23.0",
 ]

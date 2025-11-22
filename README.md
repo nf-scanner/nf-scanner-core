@@ -138,26 +138,45 @@ Os seguintes hooks serão executados automaticamente antes de cada commit:
 - **Black**: Formata automaticamente o código Python
 - **pytest**: Executa todos os testes do projeto
 
-## Uso
+## Uso como Biblioteca
 
-### Extração de Dados de NFSe
+Esta seção explica como integrar o `nf-scanner-core` como biblioteca em projetos Python.
 
-#### Via linha de comando
+### Instalação em Outros Projetos
+
+#### Instalando diretamente do GitHub utilizando pip
 
 ```bash
-# Extrai e processa dados de NFSe a partir de arquivo (PDF ou imagem)
-nf-extract caminho/para/arquivo.pdf
-
-# Opcionalmente, especifique um diretório de saída
-nf-extract caminho/para/arquivo.pdf -o diretorio/saida
+# Instalar diretamente do GitHub
+pip install git+https://github.com/nf-scanner/nf-scanner-core.git
 ```
 
-#### Via código Python
+#### Instalando utilizando o UV ou outro gerenciador de pacotes
+
+```bash
+# Instalar utilizando o UV
+uv pip install git+https://github.com/nf-scanner/nf-scanner-core.git
+```
+
+### Dependências Externas
+
+Certifique-se de que seu ambiente tenha as seguintes dependências instaladas:
+
+1. **Tesseract OCR** - Para extração de texto de imagens:
+
+   ```bash
+   # Ubuntu/Debian
+   sudo apt-get install -y tesseract-ocr tesseract-ocr-por libtesseract-dev
+   ```
+
+### Exemplos de Uso
+
+#### Exemplo 1: Extração Básica
 
 ```python
 from nf_scanner_core import NFExtractor
 
-# Cria um extrator que automaticamente detecta o tipo de arquivo (PDF ou imagem)
+# Cria um extrator que automaticamente detecta o tipo de arquivo
 extrator = NFExtractor("caminho/para/arquivo.pdf")  # ou .jpg, .png, etc.
 
 # Extrai e obtém os dados estruturados
@@ -169,3 +188,96 @@ print(f"Valor total: {nfse.valores.valor_servicos}")
 json_path = extrator.extract_and_save()
 print(f"Dados da NFSe salvos em: {json_path}")
 ```
+
+#### Exemplo 2: Extração com IA
+
+```python
+from nf_scanner_core import NFExtractor
+
+# Cria um extrator com extração por IA habilitada
+extrator = NFExtractor(
+    "caminho/para/nota_fiscal.jpg", 
+    ai_extraction=True
+)
+
+# Extrai e salva os dados
+caminho_json = extrator.extract_and_save()
+print(f"Dados extraídos salvos em: {caminho_json}")
+```
+
+#### Exemplo 3: OCR Tradicional com Análise de IA
+
+```python
+from nf_scanner_core import NFExtractor
+
+# Extração OCR regular mas com análise potencializada por IA
+extrator = NFExtractor(
+    "caminho/para/nota_fiscal.jpg", 
+    ai_extraction=False, 
+    ai_parse=True
+)
+
+# Extrai dados
+nfse = extrator.extract()
+```
+
+### Uso via Linha de Comando
+
+O pacote também inclui uma interface de linha de comando:
+
+```bash
+# Extração básica
+nf-extract caminho/para/arquivo.pdf
+
+# Com diretório de saída específico
+nf-extract caminho/para/arquivo.pdf -o diretorio/saida
+
+# Com extração usando IA
+nf-extract caminho/para/arquivo.jpg --ai-extraction
+
+# Com parsing usando IA
+nf-extract caminho/para/arquivo.jpg --ai-parse
+```
+
+### Configuração de API para IA
+
+Quando usar recursos de IA, configure as chaves de API em seu ambiente:
+
+```python
+import os
+os.environ["CLAUDE_API_KEY"] = "sua-chave-api"
+os.environ["CLAUDE_API_ID"] = "claude-sonnet-4-5-20250929"
+os.environ["CLAUDE_API_ALIAS"] = "claude-sonnet-4-5"
+```
+
+Ou utilize o padrão de arquivo .env em seu projeto como explicado na seção de desenvolvimento. Exemplo disponível em `env.example`.
+
+### Principais Classes do NF Scanner Core
+
+- **NFExtractor** - Ponto de entrada principal para extração
+- **NFSe** - Modelo de dados representando uma nota fiscal estruturada
+- **ImageExtractor** - Para extração baseada em imagem usando Tesseract
+- **PDFExtractor** - Para extração de PDF usando PyMuPDF
+- **AIImageExtractor** - Para extração de imagens potencializada por IA
+
+### Problemas Comuns
+
+1. **Tesseract OCR não encontrado**: Certifique-se de que o Tesseract esteja instalado e no seu PATH
+2. **Extração com IA não funcionando**: Verifique se suas chaves de API estão configuradas corretamente
+3. **Baixa qualidade de extração**: Tente usar a opção de análise com IA usando `ai_parse=True`
+
+## Custo
+
+A utilização da API do Claude para extração e análise tem os seguintes custos aproximados:
+Obs: Valores aproximados, podem variar de acordo com o tamanho do documento e o cache do Claude.
+
+| Operação                                    | Modelo     | Custo por NFSe |
+| ------------------------------------------- | ---------- | -------------- |
+| Parse do texto (AI Parse)                   | Claude 4.5 | U$0,02         |
+| Extração do texto da imagem (AI Extraction) | Claude 4.5 | U$0,03         |
+| Extração + Parse combinados                 | Claude 4.5 | U$0,03         |
+
+**Observações:**
+- Os valores são aproximados e podem variar de acordo com o tamanho do documento
+- A extração de imagens já inclui o parse dos dados no padrão de saída
+- A extração de PDFs não utiliza IA e não gera custos adicionais
