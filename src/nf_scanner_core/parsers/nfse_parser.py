@@ -38,7 +38,7 @@ class NFSeParser:
         if not texto:
             return ""
 
-        # Remove caracteres invisíveis (Unicode ZERO WIDTH SPACE - \u200B)
+        # Remove caracteres invisíveis (Unicode ZERO WIDTH SPACE - \u200B) <-- Original do pymupdf
         texto_limpo = texto.replace("\u200b", "")
 
         # Remove quebras de linha e espaços extras
