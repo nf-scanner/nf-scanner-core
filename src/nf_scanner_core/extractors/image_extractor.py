@@ -5,19 +5,14 @@ Este módulo fornece a interface para extrair texto de arquivos de imagem utiliz
 """
 
 import os
-import json
 import cv2
 import numpy as np
-from typing import Optional, Dict, Any, Union, Tuple
 import pytesseract
 from PIL import Image, ImageEnhance, ImageFilter
 
 from nf_scanner_core.models import NFSe
+from nf_scanner_core.parsers.ai_nfse_parser import AINFSeParser
 from nf_scanner_core.parsers.nfse_parser import NFSeParser
-from nf_scanner_core.utils.file_utils import (
-    get_output_json_path,
-    ensure_directory_exists,
-)
 
 
 class ImageExtractor:
@@ -25,16 +20,15 @@ class ImageExtractor:
     Classe responsável por extrair texto e dados estruturados de arquivos de imagem.
     """
 
-    def __init__(self, image_path: str, output_dir: Optional[str] = None):
+    def __init__(self, image_path: str, ai_parse: bool = False):
         """
         Inicializa o extrator de imagem com o caminho para o arquivo de imagem.
 
         Args:
             image_path: Caminho para o arquivo de imagem
-            output_dir: Diretório de saída opcional para salvar os resultados
         """
         self.image_path = image_path
-        self.output_dir = output_dir
+        self.ai_parse = ai_parse
 
     def _preprocess_image(self, image: Image.Image) -> Image.Image:
         """
@@ -123,55 +117,15 @@ class ImageExtractor:
         except Exception as e:
             raise RuntimeError(f"Erro ao extrair o texto da imagem: {str(e)}")
 
-    def _save_nfse_json(self, nfse: NFSe) -> str:
+    def extract(self) -> NFSe:
         """
-        Salva os dados estruturados da NFSe em formato JSON.
-
-        Args:
-            nfse: Objeto NFSe com dados estruturados
+        Extrai dados de uma NFSe a partir de uma imagem.
 
         Returns:
-            str: Caminho do arquivo JSON salvo
+            NFSe: Objeto NFSe com os dados extraídos
         """
-        # Define o caminho de saída usando a função utilitária
-        output_path = get_output_json_path(
-            self.image_path, nfse.codigo_verificacao, self.output_dir
-        )
-
-        # Converte o objeto NFSe para um dicionário
-        nfse_dict = nfse.to_dict()
-
-        # Cria resposta no formato de API HTTP
-        response = {"status": "success", "code": 200, "data": {"nfse": nfse_dict}}
-
-        # Salva o JSON
-        with open(output_path, "w", encoding="utf-8") as json_file:
-            json.dump(response, json_file, indent=2, ensure_ascii=False)
-
-        return output_path
-
-    def extract_and_save(self) -> str:
-        """
-        Extrai dados de uma NFSe a partir de uma imagem e salva em formato JSON.
-
-        Returns:
-            str: Caminho do arquivo JSON salvo
-        """
-        # Extrai texto da imagem
         text = self._extract_text()
+        if self.ai_parse:
+            return AINFSeParser.parse(text)
 
-        # Converte o texto para o modelo NFSe usando o parser
-        nfse = NFSeParser.parse(text)
-
-        # Salva os dados em formato JSON
-        return self._save_nfse_json(nfse)
-
-
-# Código de exemplo
-if __name__ == "__main__":
-    image_path = "./test_inputs/NFSe_ficticia_layout_completo.jpg"
-
-    # Extrai e salva os dados da NFSe usando a API orientada a objetos
-    extractor = ImageExtractor(image_path)
-    json_path = extractor.extract_and_save()
-    print(f"Dados da NFSe salvos em: {json_path}")
+        return NFSeParser.parse(text)
