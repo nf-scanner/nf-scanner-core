@@ -296,17 +296,15 @@ wheels = [
 
 [[package]]
 name = "nf-scanner-core"
-version = "0.1.0"
+version = "2.0"
 source = { editable = "." }
 dependencies = [
     { name = "anthropic" },
-    { name = "black" },
     { name = "numpy" },
     { name = "opencv-python" },
     { name = "pillow" },
     { name = "pymupdf" },
     { name = "pytesseract" },
-    { name = "pytest" },
     { name = "python-dotenv" },
 ]
 
@@ -314,13 +312,13 @@ dependencies = [
 dev = [
     { name = "black" },
     { name = "pre-commit" },
+    { name = "pytest" },
     { name = "uv" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "anthropic", specifier = ">=0.23.0" },
-    { name = "black", specifier = ">=25.11.0" },
     { name = "black", marker = "extra == 'dev'" },
     { name = "numpy", specifier = ">=1.26.0" },
     { name = "opencv-python", specifier = ">=4.8.0" },
@@ -328,7 +326,7 @@ requires-dist = [
     { name = "pre-commit", marker = "extra == 'dev'" },
     { name = "pymupdf", specifier = ">=1.26.0" },
     { name = "pytesseract", specifier = ">=0.3.13" },
-    { name = "pytest", specifier = ">=9.0.1" },
+    { name = "pytest", marker = "extra == 'dev'" },
     { name = "python-dotenv", specifier = ">=1.0.0" },
     { name = "uv", marker = "extra == 'dev'" },
 ]

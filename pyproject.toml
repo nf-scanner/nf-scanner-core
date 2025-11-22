@@ -22,6 +22,7 @@ dev = [
     "uv",
     "black",
     "pre-commit",
+    "pytest",
 ]
 
 [build-system]

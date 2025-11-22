@@ -28,7 +28,7 @@ jobs:
           sudo apt-get install -y tesseract-ocr tesseract-ocr-por
           sudo apt-get install -y libtesseract-dev
       - name: Installing dependencies
-        run: uv sync
+        run: uv sync --locked --all-extras --dev
 
       - name: Running tests
         run: uv run pytest --maxfail=1 --disable-warnings -q
